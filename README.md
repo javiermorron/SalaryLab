@@ -3,7 +3,7 @@
 Explora el **salario neto aproximado** de un programador en distintos países, según **seniority, modalidad y retenciones**.  
 Una herramienta visual, simple y lista para compartir con la comunidad.
 
-![Captura de pantalla de SalaryLab](./preview.png)
+![Captura de pantalla de SalaryLab](assets/img/preview.png)
 
 ---
 

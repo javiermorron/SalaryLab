@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Salario Neto · Visual</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: {50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9',800:'#5b21b6',900:'#4c1d95'} } } } };
+  </script>
+  <style>.glass{backdrop-filter: blur(6px); background: rgba(255,255,255,.08)}</style>
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+  <header class="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
+    <div class="flex items-center gap-2">
+      <div class="w-3 h-3 rounded-full bg-brand-500"></div>
+      <span class="font-semibold tracking-wide">SalaryLab</span>
+    </div>
+    <a class="text-sm opacity-80 hover:opacity-100" href="#autores">Autores</a>
+  </header>
+
+  <section class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 px-4 py-8 md:py-14">
+    <div>
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight">Salario de un <br/> programador en <span id="heroPais" class="underline decoration-brand-500">tu país</span></h1>
+      <p class="mt-4 text-slate-300 max-w-xl">Explora el salario neto aproximado según seniority, modalidad y retenciones. Calculadora simple y lista para compartir.</p>
+    </div>
+
+    <div class="rounded-2xl bg-brand-700/30 ring-1 ring-white/10 p-5 md:p-6 shadow-2xl">
+      <h2 class="text-center text-lg font-semibold">Calcula el salario según habilidades y experiencia</h2>
+
+      <div class="mt-5">
+        <label class="text-sm text-slate-200">País o región</label>
+        <select id="pais" class="mt-2 w-full rounded-xl bg-slate-900/60 ring-1 ring-white/10 px-3 py-2">
+          <option value="">Selecciona un país</option>
+        </select>
+      </div>
+
+      <div class="mt-5">
+        <span class="text-sm text-slate-200">Nivel de seniority</span>
+        <div class="mt-2 grid grid-cols-3 gap-2">
+          <button data-sen="Junior" class="seg active">Junior</button>
+          <button data-sen="SemiSenior" class="seg">Mid level</button>
+          <button data-sen="Senior" class="seg">Senior</button>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <span class="text-sm text-slate-200">Modalidad</span>
+        <div class="mt-2 grid grid-cols-4 gap-2">
+          <button data-mod="Remoto Global" class="seg active">Remoto <span class="block text-[11px] opacity-70">Global</span></button>
+          <button data-mod="Remoto local" class="seg">Remoto <span class="block text-[11px] opacity-70">local</span></button>
+          <button data-mod="Presencial" class="seg">Presencial</button>
+          <button data-mod="Híbrido" class="seg">Híbrido</button>
+        </div>
+      </div>
+
+      <div class="mt-5 grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-sm text-slate-200">Bruto anual (€)</label>
+          <input id="bruto" type="number" class="mt-2 w-full rounded-xl bg-slate-900/60 ring-1 ring-white/10 px-3 py-2" placeholder="30000">
+        </div>
+        <div>
+          <label class="text-sm text-slate-200">IRPF / Retención (%)</label>
+          <input id="irpf" type="number" class="mt-2 w-full rounded-xl bg-slate-900/60 ring-1 ring-white/10 px-3 py-2" value="0">
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <span class="text-sm text-slate-200">Rol</span>
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <button data-rol="Desarrollador" class="seg active">Soy desarrollador</button>
+          <button data-rol="Reclutador" class="seg">Soy reclutador</button>
+        </div>
+      </div>
+
+      <button id="calcular" class="mt-6 w-full rounded-xl bg-white text-slate-900 font-semibold py-3 hover:bg-brand-100 transition">CALCULAR EL SALARIO</button>
+
+      <div id="out" class="mt-4 hidden rounded-xl bg-slate-900/60 ring-1 ring-white/10 p-4">
+        <p class="text-sm text-slate-300">Neto mensual estimado</p>
+        <p id="neto" class="text-3xl font-extrabold mt-1">€0</p>
+        <p id="detalle" class="text-xs text-slate-400 mt-2"></p>
+      </div>
+
+      <a href="Comparativa_Salarios_Programadores_2025.xlsx" download class="mt-4 inline-flex items-center gap-2 text-brand-200 hover:text-white">
+        <span>📥</span> Descargar Excel comparativo
+      </a>
+    </div>
+  </section>
+
+  <section id="autores" class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="bg-slate-900/40 ring-1 ring-white/10 rounded-2xl p-6">
+      <h3 class="text-lg font-semibold">Autores & Colaboradores</h3>
+      <div id="team" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-400">Hecho con 💙 por la comunidad · <a class="underline" href="https://www.linkedin.com/feed/update/urn:li:activity:7358487442745696257">¿Quieres colaborar?</a></footer>
+
+  <script>
+    const segs = () => document.querySelectorAll('.seg');
+    document.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.seg'); if(!btn) return;
+      const group = [...btn.parentElement.querySelectorAll('.seg')];
+      group.forEach(b=>b.classList.remove('active','bg-brand-600','ring-2','ring-brand-300'));
+      btn.classList.add('active','bg-brand-600','ring-2','ring-brand-300');
+    });
+    document.addEventListener('DOMContentLoaded', ()=>{
+      segs().forEach(b=>{ b.className += ' seg inline-flex justify-center items-center text-center rounded-xl bg-slate-900/60 ring-1 ring-white/10 px-3 py-2 hover:bg-slate-900'; });
+    });
+
+    const PAISES = ['España','Argentina','Chile','México','Colombia','Perú','Uruguay','Venezuela','Estados Unidos','Francia','Alemania','Italia','Portugal','Brasil','Canadá','Reino Unido','Japón','India'];
+    const paisSel = document.getElementById('pais');
+    PAISES.sort().forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; paisSel.appendChild(o); });
+    paisSel.addEventListener('change', ()=>{ document.getElementById('heroPais').textContent = paisSel.value||'tu país'; });
+
+    document.getElementById('calcular').addEventListener('click', ()=>{
+      const pais = paisSel.value;
+      const bruto = parseFloat(document.getElementById('bruto').value||'0');
+      const irpf = parseFloat(document.getElementById('irpf').value||'0');
+      if(!pais||!bruto||bruto<=0){ alert('Completa país y un bruto anual válido'); return; }
+      const anualNeto = bruto*(1 - (irpf/100));
+      const mensual = anualNeto/12;
+      document.getElementById('out').classList.remove('hidden');
+      document.getElementById('neto').textContent = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(mensual);
+      document.getElementById('detalle').textContent = `País: ${pais} · Bruto: ${new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(bruto)} · IRPF: ${irpf}%`;
+    });
+
+    const TEAM=[
+      {nombre:'Javier Morrón', rol:'Autor / Coordinación', avatar:'https://avatar.iran.liara.run/public/1', links:[{t:'LinkedIn',u:'https://www.linkedin.com/in/javiermorron'}]},
+      {nombre:'Ana Susana Uztariz Escalona', rol:'Analista de Datos / Excel', avatar:'https://avatar.iran.liara.run/public/20', links:[{t:'LinkedIn',u:'https://www.linkedin.com/in/susana-uzt%C3%A1riz/'},{t:'Instagram',u:'https://www.instagram.com/excelasmart'}]},
+    ];
+    const teamEl = document.getElementById('team');
+    TEAM.forEach(p=>{
+      const card = document.createElement('div');
+      card.className='glass rounded-xl p-4 ring-1 ring-white/10 flex gap-3';
+      card.innerHTML=`<img src="${p.avatar}" class="w-12 h-12 rounded-full object-cover"/>
+        <div><p class="font-semibold">${p.nombre}</p>
+        <p class="text-xs text-slate-300 mb-2">${p.rol}</p>
+        <div class="flex gap-3">${p.links.map(l=>`<a class='underline text-brand-300 hover:text-white text-sm' target='_blank' href='${l.u}'>${l.t}</a>`).join('')}</div></div>`;
+      teamEl.appendChild(card);
+    });
+  </script>
+</body>
+</html>
